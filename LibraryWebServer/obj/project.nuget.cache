@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/0AQsMBZGqhn4fVdMkJkukohAn6G1/Ao9mLs8ZSZw9YjYvXC2ZFtMdBfiqum8ktexcJS6e8STZ3QNpgjOThfEQ==",
+  "dgSpecHash": "6Orcdnk4igWX2K91U9MJ67AHZqnYNSQAC/tyDO4aY9Yw4yaNftiv6yRfnLAHE5zw3HuJ9rsKInGjAFJ5cZJhrA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Andrew\\Documents\\Skool\\5530 - Database Systems\\Homework 6\\LibraryWebServerHandout\\LibraryWebServer\\LibraryWebServer.csproj",
+  "projectFilePath": "C:\\Users\\Andrew\\Documents\\Skool\\5530 - Database Systems\\Homework 6\\LibraryWebServerHandout\\LMS\\LibraryWebServer\\LibraryWebServer.csproj",
   "expectedPackageFiles": [
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnet.webapi.client\\5.2.6\\microsoft.aspnet.webapi.client.5.2.6.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnetcore\\2.2.0\\microsoft.aspnetcore.2.2.0.nupkg.sha512",
