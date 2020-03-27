@@ -39,10 +39,6 @@ namespace LibraryWebServer.Controllers
                             && p.CardNum == cardnum
                             select p;
 
-                //foreach (Patrons x in query)
-                //{
-
-                //}
                 if (query.ToList().Count != 0)
                 {
                     loginSuccessful = true;
@@ -111,7 +107,7 @@ namespace LibraryWebServer.Controllers
                                  isbn = t.Isbn,
                                  author = t.Author,
                                  title = t.Title,
-                                 Serial = j1 == null ? (uint?)null : j1.Serial,
+                                 Serial = j1 == null ? (uint?) null : j1.Serial,
                                  Name = j3 == null ? "" : j3.Name
                              };
                 return Json(result.ToArray());
