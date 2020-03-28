@@ -1,24 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Andrew\\Documents\\Skool\\5530 - Database Systems\\Homework 6\\LibraryWebServerHandout\\LMS\\LibraryWebServer\\LibraryWebServer.csproj": {}
+    "C:\\Users\\rajan\\Desktop\\cs_work\\LMS\\LibraryWebServer\\LibraryWebServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Andrew\\Documents\\Skool\\5530 - Database Systems\\Homework 6\\LibraryWebServerHandout\\LMS\\LibraryWebServer\\LibraryWebServer.csproj": {
+    "C:\\Users\\rajan\\Desktop\\cs_work\\LMS\\LibraryWebServer\\LibraryWebServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Andrew\\Documents\\Skool\\5530 - Database Systems\\Homework 6\\LibraryWebServerHandout\\LMS\\LibraryWebServer\\LibraryWebServer.csproj",
+        "projectUniqueName": "C:\\Users\\rajan\\Desktop\\cs_work\\LMS\\LibraryWebServer\\LibraryWebServer.csproj",
         "projectName": "LibraryWebServer",
-        "projectPath": "C:\\Users\\Andrew\\Documents\\Skool\\5530 - Database Systems\\Homework 6\\LibraryWebServerHandout\\LMS\\LibraryWebServer\\LibraryWebServer.csproj",
-        "packagesPath": "C:\\Users\\Andrew\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Andrew\\Documents\\Skool\\5530 - Database Systems\\Homework 6\\LibraryWebServerHandout\\LMS\\LibraryWebServer\\obj\\",
+        "projectPath": "C:\\Users\\rajan\\Desktop\\cs_work\\LMS\\LibraryWebServer\\LibraryWebServer.csproj",
+        "packagesPath": "C:\\Users\\rajan\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\rajan\\Desktop\\cs_work\\LMS\\LibraryWebServer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Andrew\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\rajan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp2.2"
@@ -73,7 +75,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.200\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
