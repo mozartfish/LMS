@@ -12160,11 +12160,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Andrew\\Documents\\Skool\\5530 - Database Systems\\LMS\\LMS.csproj",
+      "projectUniqueName": "C:\\Users\\Andrew\\Documents\\Skool\\5530 - Database Systems\\Homework 6\\LibraryWebServerHandout\\LMS\\LMS\\LMS.csproj",
       "projectName": "LMS",
-      "projectPath": "C:\\Users\\Andrew\\Documents\\Skool\\5530 - Database Systems\\LMS\\LMS.csproj",
+      "projectPath": "C:\\Users\\Andrew\\Documents\\Skool\\5530 - Database Systems\\Homework 6\\LibraryWebServerHandout\\LMS\\LMS\\LMS.csproj",
       "packagesPath": "C:\\Users\\Andrew\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Andrew\\Documents\\Skool\\5530 - Database Systems\\LMS\\obj\\",
+      "outputPath": "C:\\Users\\Andrew\\Documents\\Skool\\5530 - Database Systems\\Homework 6\\LibraryWebServerHandout\\LMS\\LMS\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
