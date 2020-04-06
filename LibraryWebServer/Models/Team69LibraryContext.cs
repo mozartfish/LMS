@@ -26,7 +26,7 @@ namespace LibraryWebServer.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySql("Server=atr.eng.utah.edu;User Id=u1027713;Password=pwd;Database=Team69Library");
+                optionsBuilder.UseMySql("Server=atr.eng.utah.edu;User Id=u1136324;Password=pwd;Database=Team69Library");
             }
         }
 

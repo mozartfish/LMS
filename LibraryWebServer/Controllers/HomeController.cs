@@ -130,7 +130,9 @@ namespace LibraryWebServer.Controllers
                 var query = from c in db.CheckedOut
                             where c.CardNum == card
                             join i in db.Inventory on c.Serial equals i.Serial into checkedout
-                            from Info in checkedout join t in db.Titles on Info.Isbn equals t.Isbn into Result
+                            from Info in checkedout 
+                            join t in db.Titles 
+                            on Info.Isbn equals t.Isbn into Result
                             from FinalJoin in Result.DefaultIfEmpty()
                             select new
                             {
