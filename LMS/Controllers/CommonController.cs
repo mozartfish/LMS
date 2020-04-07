@@ -123,6 +123,7 @@ namespace LMS.Controllers
                         where c.DeptAbbreviation == subject && c.CourseNumber == number
                         join cl in db.Classes
                         on c.CourseId equals cl.CourseId into classes
+
                         from j1 in classes
                         join p in db.Professors
                         on j1.Taught equals p.UId
@@ -157,12 +158,15 @@ namespace LMS.Controllers
             var query = from c in db.Courses
                         where c.CourseName == subject && c.CourseNumber == num
                         join cl in db.Classes on c.CourseId equals cl.CourseId into classes
+
                         from j1 in classes
                         where j1.Season == season && j1.Year == year
                         join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into AssingCat
+
                         from j2 in AssingCat
                         where j2.CategoryName == category
                         join ass in db.Assignments on j2.CategoryId equals ass.CategoryId into Assign
+
                         from j3 in Assign
                         where j3.AsgmtName == asgname
                         select j3.Contents;
@@ -190,15 +194,19 @@ namespace LMS.Controllers
             var query = from c in db.Courses
                         where c.CourseName == subject && c.CourseNumber == num
                         join cl in db.Classes on c.CourseId equals cl.CourseId into classes
+
                         from j1 in classes
                         where j1.Season == season && j1.Year == year
                         join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into AssingCat
+
                         from j2 in AssingCat
                         where j2.CategoryName == category
                         join ass in db.Assignments on j2.CategoryId equals ass.CategoryId into Assign
+
                         from j3 in Assign
                         where j3.AsgmtName == asgname
                         join sub in db.Submission on j3.AssignmentId equals sub.AssignmentId into submission
+
                         from j4 in submission
                         where j4.UId == uid
                         select j4.Content;
@@ -228,18 +236,21 @@ namespace LMS.Controllers
             var studQuery = from s in db.Students
                             where s.UId == uid
                             select s;
+
             if(studQuery.ToList().Count == 0)
             {
                 //not a student
                 var profQuery = from p in db.Professors
                                 where p.UId == uid
                                 select p;
+
                 if(profQuery.ToList().Count == 0)
                 {
                     //not a professor
                     var adminQuery = from a in db.Administrators
                                     where a.UId == uid
                                     select a;
+
                     if (adminQuery.ToList().Count == 0)
                     {
                         //not an administrator so user does not exist
@@ -256,6 +267,7 @@ namespace LMS.Controllers
                                             lname = a.LastName,
                                             uid = uid,
                                         };
+
                         return Json(deptQuery);
                     }
                 }
@@ -272,6 +284,7 @@ namespace LMS.Controllers
                                         uid = uid,
                                         department = d.DeptName
                                     };
+
                     return Json(deptQuery);
                 }
             }
