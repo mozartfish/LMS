@@ -52,10 +52,6 @@ namespace LMS.Controllers
             return Json(query.ToArray());
         }
 
-
-
-
-
         /// <summary>
         /// Returns a JSON array of all the professors working in a given department.
         /// Each object in the array should have the following fields:
@@ -78,8 +74,6 @@ namespace LMS.Controllers
 
             return Json(query.ToArray());
         }
-
-
 
         /// <summary>
         /// Creates a course.
@@ -137,7 +131,7 @@ namespace LMS.Controllers
         /// a Class offering of the same Course in the same Semester.</returns>
         public IActionResult CreateClass(string subject, int number, string season, int year, DateTime start, DateTime end, string location, string instructor)
         {
-            var query = from c in db.Courses
+                var query = from c in db.Courses
                         where c.DeptAbbreviation == subject && c.CourseNumber == number
                         join cl in db.Classes on c.CourseId equals cl.CourseId into join1
                         from j1 in join1
