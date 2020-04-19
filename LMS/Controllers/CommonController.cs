@@ -84,22 +84,20 @@ namespace LMS.Controllers
         public IActionResult GetCatalog()
         {
             var query = from d in db.Departments
-                        select d;
-            List<JsonResult> obj = new List<JsonResult>();
-            foreach(var dept in query.ToList())
-            {
-                var courseQuery = from c in db.Courses
-                                  where c.DeptAbbreviation == dept.DeptAbbreviation
-                                  select new
-                                  {
-                                      subject = dept.DeptAbbreviation,
-                                      dname = dept.DeptName,
-                                      courses = c
-                                  };
-                obj.Add(Json(courseQuery.ToArray()));
-            }
-            //this may not work
-            return Json(obj.ToArray());
+                        select new
+                        {
+                            subject = d.DeptAbbreviation,
+                            dname = d.DeptName,
+                            courses = (from c in db.Courses
+                                       where c.DeptAbbreviation == d.DeptAbbreviation
+                                       select new
+                                       {
+                                           number = c.CourseNumber,
+                                           cname = c.CourseName
+                                       })
+                        };
+
+            return Json(query.ToArray());
         }
 
         /// <summary>
@@ -171,7 +169,7 @@ namespace LMS.Controllers
                         where j3.AsgmtName == asgname
                         select j3.Contents;
 
-            return Content(query.ToString());
+            return Content(query.First());
         }
 
 
@@ -211,7 +209,7 @@ namespace LMS.Controllers
                         where j4.UId == uid
                         select j4.Content;
 
-            return Content(query.ToString());
+            return Content(query.First());
         }
 
 
@@ -268,7 +266,7 @@ namespace LMS.Controllers
                                             uid = uid,
                                         };
 
-                        return Json(deptQuery);
+                        return Json(deptQuery.First());
                     }
                 }
                 else
@@ -276,16 +274,16 @@ namespace LMS.Controllers
                     //is a professor
                     var deptQuery = from p in db.Professors
                                     where p.UId == uid
-                                    join d in db.Departments on p.WorksIn equals d.DeptAbbreviation
+                                    join d in db.Departments on p.WorksIn equals d.DeptAbbreviation into join1
+                                    from j1 in join1
                                     select new
                                     {
                                         fname = p.FirstName,
                                         lname = p.LastName,
-                                        uid = uid,
-                                        department = d.DeptName
+                                        uid = p.UId,
+                                        department = j1.DeptName
                                     };
-
-                    return Json(deptQuery);
+                    return Json(deptQuery.First());
                 }
             }
             else
@@ -301,7 +299,7 @@ namespace LMS.Controllers
                                     uid = uid,
                                     department = d.DeptName
                                 };
-                return Json(deptQuery);
+                return Json(deptQuery.First());
             }
             
         }

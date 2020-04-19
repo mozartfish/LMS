@@ -353,6 +353,7 @@ namespace LMS.Controllers
             {
                 AsgmtName = asgname,
                 MaxPointValue = (uint)asgpoints,
+                CategoryId = AssignmentQuery.First().CategoryID,
                 Contents = asgcontents,
                 DueDate = asgdue
             };
