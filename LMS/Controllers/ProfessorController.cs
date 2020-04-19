@@ -126,7 +126,7 @@ namespace LMS.Controllers
                             lname = st.LastName,
                             uid = st.UId,
                             dob = st.Dob,
-                            grade = st.EnrollmentGrade
+                            grade = j2.Grade
                         };
 
             return Json(query.ToArray());
@@ -166,15 +166,15 @@ namespace LMS.Controllers
                                 join assign in db.Assignments on j2.CategoryId equals assign.CategoryId into foo
 
                                 from thing in foo
-                                join sub in db.Submission on thing.AssignmentId equals sub.AssignmentId into bar
                                 select new
                                 {
                                     aname = thing.AsgmtName,
                                     cname = j2.CategoryName,
                                     due = thing.DueDate,
-                                    submissions = bar.Count()
+                                    submissions = (from sub in db.Submission
+                                                   where sub.AssignmentId == thing.AssignmentId
+                                                   select sub).Count()
                                 };
-
                 return Json(nullquery.ToArray());
             }
 
@@ -191,13 +191,14 @@ namespace LMS.Controllers
                         join assign in db.Assignments on j2.CategoryId equals assign.CategoryId into foo
 
                         from thing in foo
-                        join sub in db.Submission on thing.AssignmentId equals sub.AssignmentId into bar
                         select new
                         {
                             aname = thing.AsgmtName,
                             cname = j2.CategoryName,
                             due = thing.DueDate,
-                            submissions = bar.Count()
+                            submissions = (from sub in db.Submission
+                                           where sub.AssignmentId == thing.AssignmentId
+                                           select sub).Count()
                         };
             return Json(query.ToArray());
         }
@@ -218,19 +219,19 @@ namespace LMS.Controllers
         public IActionResult GetAssignmentCategories(string subject, int num, string season, int year)
         {
             var query = from c in db.Courses
-                            where c.DeptAbbreviation == subject && c.CourseNumber == num
-                            join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
+                        where c.DeptAbbreviation == subject && c.CourseNumber == num
+                        join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
 
-                            from j1 in join1
-                            where j1.Season == season && j1.Year == year
-                            join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into join2
+                        from j1 in join1
+                        where j1.Season == season && j1.Year == year
+                        join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into join2
 
-                            from j2 in join2
-                            select new
-                            {
-                                name = j2.CategoryName,
-                                weight = j2.Weight
-                            };
+                        from j2 in join2
+                        select new
+                        {
+                            name = j2.CategoryName,
+                            weight = j2.Weight
+                        };
             return Json(query.ToArray());
         }
 
@@ -260,7 +261,7 @@ namespace LMS.Controllers
                         select j2;
 
 
-            if(query.ToList().Count != 0)
+            if (query.ToList().Count != 0)
             {
                 return Json(new { success = false });
             }
@@ -289,7 +290,7 @@ namespace LMS.Controllers
             {
                 db.SaveChanges();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
 
                 return Json(new { success = false });
@@ -369,6 +370,32 @@ namespace LMS.Controllers
                 return Json(new { success = false });
             }
 
+            var studQuery = from c in db.Courses
+                            where c.DeptAbbreviation == subject && c.CourseNumber == num
+                            join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
+
+                            from j1 in join1
+                            where j1.Season == season && j1.Year == year
+                            join en in db.EnrollmentGrade on j1.ClassId equals en.ClassId into join2
+
+                            from j2 in join2
+                            join stud in db.Students on j2.UId equals stud.UId into join3
+
+                            from j3 in join3
+                            select new
+                            {
+                                uid = j3.UId,
+                                classID = j2.ClassId
+                            };
+
+            foreach (var student in studQuery.ToList())
+            {
+                if (!autoGrade(student.uid, student.classID))
+                {
+                    return Json(new { success = false });
+                }
+            }
+
             return Json(new { success = true });
         }
 
@@ -415,7 +442,7 @@ namespace LMS.Controllers
                         select new
                         {
                             fname = j5.FirstName,
-                            lanme = j5.LastName,
+                            lname = j5.LastName,
                             uid = j5.UId,
                             time = j4.SubTime,
                             score = j4.Score
@@ -458,19 +485,29 @@ namespace LMS.Controllers
                         where j4.UId == uid
                         select j4;
 
-            foreach(var sub in query.ToList())
-            {
-                sub.Score = (uint)score;
-            }
+            var submission = query.First();
+            submission.Score = (uint)score;
+
+
 
             try
             {
                 db.SaveChanges();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Json(new { success = false });
             }
+
+            var classQuery = from c in db.Courses
+                             where c.DeptAbbreviation == subject && c.CourseNumber == num
+                             join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
+
+                             from j1 in join1
+                             where j1.Season == season && j1.Year == year
+                             select j1;
+            autoGrade(submission.UId, classQuery.First().ClassId);
+
 
             return Json(new { success = true });
         }
@@ -505,8 +542,90 @@ namespace LMS.Controllers
             return Json(query.ToArray());
         }
 
+        bool autoGrade(string uid, uint classID)
+        {
+            var catQuery = from ac in db.AssignmentCategories
+                           where ac.ClassId == classID
+                           select ac;
+            double percentage = 0;
+            double total = 0;
+            foreach (var category in catQuery.ToList())
+            {
+                var assignQuery = from assign in db.Assignments
+                                  where assign.CategoryId == category.CategoryId
+                                  select assign;
+                if (assignQuery.ToList().Count == 0)
+                {
+                    continue;
+                }
+                double totalPointsEarned = 0;
+                double totalPoints = 0;
+                foreach (var assignment in assignQuery.ToList())
+                {
+                    totalPoints += assignment.MaxPointValue;
+                    var subQuery = from sub in db.Submission
+                                   where sub.AssignmentId == assignment.AssignmentId
+                                   select sub;
+                    if (subQuery.ToList().Count != 0)
+                    {
+                        totalPointsEarned += subQuery.First().Score;
+                    }
+                }
+                
+                percentage = totalPointsEarned / totalPoints;
+                percentage *= category.Weight;
+                total += category.Weight;
 
-        /*******End code to modify********/
+            }
 
+            double scale = 100 / total;
+            percentage*= scale;
+            string LetterGrade = null;
+
+
+            if (100 > percentage && percentage >= 93)
+                LetterGrade = "A";
+            else if (93 > percentage && percentage >= 90)
+                LetterGrade = "A-";
+            else if (90 > percentage && percentage >= 87)
+                LetterGrade = "B+";
+            else if (87 > percentage && percentage >= 83)
+                LetterGrade = "B";
+            else if (83 > percentage && percentage >= 80)
+                LetterGrade = "B-";
+            else if (80 > percentage && percentage >= 77)
+                LetterGrade = "C+";
+            else if (77 > percentage && percentage >= 73)
+                LetterGrade = "C";
+            else if (73 > percentage && percentage >= 70)
+                LetterGrade = "C-";
+            else if (70 > percentage && percentage >= 67)
+                LetterGrade = "D+";
+            else if (67 > percentage && percentage >= 63)
+                LetterGrade = "D";
+            else if (63 > percentage && percentage >= 60)
+                LetterGrade = "D-";
+            else
+                LetterGrade = "E";
+
+            var enrollQuery = from en in db.EnrollmentGrade
+                              where en.UId == uid && en.ClassId == classID
+                              select en;
+            var enrollment = enrollQuery.First();
+            enrollment.Grade = LetterGrade;
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            return true;
+
+            /*******End code to modify********/
+
+
+        }
     }
 }

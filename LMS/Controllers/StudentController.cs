@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using LMS.Models.LMSModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -118,21 +120,19 @@ namespace LMS.Controllers
                         join assign in db.Assignments on j2.CategoryId equals assign.CategoryId into join3
 
                         from j3 in join3
-                        join sub in db.Submission on j3.AssignmentId equals sub.AssignmentId into join4
-
-                        from j4 in join4
                         select new
                         {
                             aname = j3.AsgmtName,
                             cname = j2.CategoryName,
                             due = j3.DueDate,
-                            score = j4.Score
+                            score = (from s in db.Submission
+                                     where s.AssignmentId == j3.AssignmentId && s.UId == uid
+                                     select s.Score).DefaultIfEmpty()
+                                     
                         };
 
             return Json(query.ToArray());
         }
-
-
 
         /// <summary>
         /// Adds a submission to the given assignment for the given student
@@ -155,10 +155,73 @@ namespace LMS.Controllers
         public IActionResult SubmitAssignmentText(string subject, int num, string season, int year,
           string category, string asgname, string uid, string contents)
         {
+            var query = from c in db.Courses
+                        where c.DeptAbbreviation == subject && c.CourseNumber == num
+                        join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
 
-            return Json(new { success = false });
+                        from j1 in join1
+                        where j1.Year == year && j1.Season == season
+                        join asgn in db.AssignmentCategories on j1.ClassId equals asgn.ClassId into join2
+
+                        from j2 in join2
+                        where j2.CategoryName == category
+                        join assign in db.Assignments on j2.CategoryId equals assign.CategoryId into join3
+
+                        from j3 in join3
+                        where j3.AsgmtName == asgname
+                        select new
+                        {
+                            assignID = j3.AssignmentId,
+                        };
+
+            if (query.ToList().Count == 0)
+            {
+                return Json(new { success = false });
+            }
+
+            var subquery = from sub in db.Submission
+                           where sub.UId == uid && sub.AssignmentId == query.First().assignID
+                           select sub;
+            if (subquery.ToList().Count == 0)
+            {
+                Submission sub = new Submission()
+                {
+                    AssignmentId = query.First().assignID,
+                    UId = uid,
+                    SubTime = DateTime.Now,
+                    Score = 0,
+                    Content = contents
+                };
+                db.Submission.Add(sub);
+
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    return Json(new { success = false });
+                }
+
+            }
+            else
+            {
+                Submission sub = subquery.First();
+                sub.Content = contents;
+                sub.SubTime = DateTime.Now;
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    return Json(new { success = false });
+                }
+            }
+
+
+            return Json(new { success = true });
         }
-
 
         /// <summary>
         /// Enrolls a student in a class.
@@ -172,8 +235,32 @@ namespace LMS.Controllers
         /// false if the student is already enrolled in the Class.</returns>
         public IActionResult Enroll(string subject, int num, string season, int year, string uid)
         {
+            var query = from c in db.Courses
+                        where c.DeptAbbreviation == subject && c.CourseNumber == num
+                        join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
 
-            return Json(new { success = false });
+                        from j1 in join1
+                        where j1.Year == year && j1.Season == season
+                        select j1;
+
+            EnrollmentGrade grade = new EnrollmentGrade()
+            {
+                ClassId = query.First().ClassId,
+                UId = uid,
+                Grade = "--"
+            };
+
+            try
+            {
+                db.EnrollmentGrade.Add(grade);
+                db.SaveChanges();
+            }
+            catch(Exception e)
+            {
+                return Json(new { success = false });
+            }
+
+            return Json(new { success = true });
         }
 
 
@@ -191,8 +278,59 @@ namespace LMS.Controllers
         /// <returns>A JSON object containing a single field called "gpa" with the number value</returns>
         public IActionResult GetGPA(string uid)
         {
-
-            return Json(null);
+            var query = from sub in db.EnrollmentGrade
+                        where sub.UId == uid
+                        select sub;
+            double numCredits = 0;
+            double gradePoints = 0.0;
+            foreach(var klasse in query.ToList())
+            {
+                string grade = klasse.Grade;
+                if (grade.Equals("--")){
+                    continue;
+                }
+                else if (grade.Equals("A")){
+                    gradePoints += 4.0;
+                }
+                else if (grade.Equals("A-"))
+                {
+                    gradePoints += 3.7;
+                }
+                else if (grade.Equals("B+"))
+                {
+                    gradePoints += 3.3;
+                }
+                else if (grade.Equals("B"))
+                {
+                    gradePoints += 3.0;
+                }
+                else if (grade.Equals("B-"))
+                {
+                    gradePoints += 2.7;
+                }
+                else if (grade.Equals("C+"))
+                { 
+                    gradePoints += 2.3;
+                }
+                else if (grade.Equals("C"))
+                {
+                    gradePoints += 2.0;
+                }
+                else if (grade.Equals("D+")){
+                    gradePoints += 1.3;
+                }
+                else if (grade.Equals("D")){
+                    gradePoints += 1.0;
+                }
+                else if (grade.Equals("D-")){
+                    gradePoints += 0.7;
+                }
+                else if (grade.Equals("E")){
+                    gradePoints += 0.0;
+                }
+                numCredits += 4;
+            }
+            return Json(new {gpa = gradePoints/numCredits });
         }
 
         /*******End code to modify********/

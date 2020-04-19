@@ -208,6 +208,10 @@ namespace LMS.Controllers
                         from j4 in submission
                         where j4.UId == uid
                         select j4.Content;
+            if(query.ToList().Count == 0)
+            {
+                return Content("");
+            }
 
             return Content(query.First());
         }
