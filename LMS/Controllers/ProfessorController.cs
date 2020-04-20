@@ -344,7 +344,7 @@ namespace LMS.Controllers
                                   join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into join2
 
                                   from j2 in join2
-
+                                  where j2.CategoryName == category
                                   select new
                                   {
                                       CategoryID = j2.CategoryId,

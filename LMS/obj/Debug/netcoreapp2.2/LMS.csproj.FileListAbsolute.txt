@@ -1,8 +1,3 @@
-C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.csproj.CoreCompileInputs.cache
-C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.RazorAssemblyInfo.cache
-C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.RazorAssemblyInfo.cs
-C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.AssemblyInfoInputs.cache
-C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.AssemblyInfo.cs
 C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\bin\Debug\netcoreapp2.2\appsettings.json
 C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\bin\Debug\netcoreapp2.2\Properties\launchSettings.json
 C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\bin\Debug\netcoreapp2.2\https.pfx
@@ -13,6 +8,11 @@ C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebSer
 C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\bin\Debug\netcoreapp2.2\LMS.pdb
 C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\bin\Debug\netcoreapp2.2\LMS.Views.dll
 C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\bin\Debug\netcoreapp2.2\LMS.Views.pdb
+C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.csproj.CoreCompileInputs.cache
+C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.RazorAssemblyInfo.cache
+C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.RazorAssemblyInfo.cs
+C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.AssemblyInfoInputs.cache
+C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.AssemblyInfo.cs
 C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.TagHelpers.input.cache
 C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.TagHelpers.output.cache
 C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.RazorCoreGenerate.cache
@@ -78,4 +78,3 @@ C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebSer
 C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.pdb
 C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.genruntimeconfig.cache
 C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.csproj.CopyComplete
-C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.csprojAssemblyReference.cache

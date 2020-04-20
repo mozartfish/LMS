@@ -111,9 +111,10 @@ namespace LMS.Controllers
         {
             var query = from c in db.Courses
                         where c.DeptAbbreviation == subject && c.CourseNumber == num
-                        join klasse in db.Classes on c.CourseId equals klasse.ClassId into join1
+                        join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
 
                         from j1 in join1
+                        where j1.Season == season && j1.Year == year
                         join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into join2
 
                         from j2 in join2
@@ -130,7 +131,7 @@ namespace LMS.Controllers
                                      select s.Score).DefaultIfEmpty()
                                      
                         };
-
+            var quer = query.ToList();
             return Json(query.ToArray());
         }
 
@@ -281,7 +282,11 @@ namespace LMS.Controllers
             var query = from sub in db.EnrollmentGrade
                         where sub.UId == uid
                         select sub;
-            double numCredits = 0;
+            if(query.ToList().Count == 0)
+            {
+                return Json(new { gpa = 0.0 });
+            }
+            double numCredits = 0.0;
             double gradePoints = 0.0;
             foreach(var klasse in query.ToList())
             {
@@ -290,40 +295,40 @@ namespace LMS.Controllers
                     continue;
                 }
                 else if (grade.Equals("A")){
-                    gradePoints += 4.0;
+                    gradePoints += 4* 4.0;
                 }
                 else if (grade.Equals("A-"))
                 {
-                    gradePoints += 3.7;
+                    gradePoints += 4 * 3.7;
                 }
                 else if (grade.Equals("B+"))
                 {
-                    gradePoints += 3.3;
+                    gradePoints += 4 * 3.3;
                 }
                 else if (grade.Equals("B"))
                 {
-                    gradePoints += 3.0;
+                    gradePoints += 4 * 3.0;
                 }
                 else if (grade.Equals("B-"))
                 {
-                    gradePoints += 2.7;
+                    gradePoints += 4 * 2.7;
                 }
                 else if (grade.Equals("C+"))
                 { 
-                    gradePoints += 2.3;
+                    gradePoints += 4 * 2.3;
                 }
                 else if (grade.Equals("C"))
                 {
-                    gradePoints += 2.0;
+                    gradePoints += 4 * 2.0;
                 }
                 else if (grade.Equals("D+")){
-                    gradePoints += 1.3;
+                    gradePoints += 4 * 1.3;
                 }
                 else if (grade.Equals("D")){
-                    gradePoints += 1.0;
+                    gradePoints += 4 * 1.0;
                 }
                 else if (grade.Equals("D-")){
-                    gradePoints += 0.7;
+                    gradePoints += 4 * 0.7;
                 }
                 else if (grade.Equals("E")){
                     gradePoints += 0.0;
