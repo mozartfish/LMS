@@ -549,6 +549,7 @@ namespace LMS.Controllers
                            select ac;
             double percentage = 0;
             double total = 0;
+            double catPercentTotal = 0;
             foreach (var category in catQuery.ToList())
             {
                 var assignQuery = from assign in db.Assignments
@@ -560,6 +561,7 @@ namespace LMS.Controllers
                 }
                 double totalPointsEarned = 0;
                 double totalPoints = 0;
+                
                 foreach (var assignment in assignQuery.ToList())
                 {
                     totalPoints += assignment.MaxPointValue;
@@ -574,16 +576,18 @@ namespace LMS.Controllers
                 
                 percentage = totalPointsEarned / totalPoints;
                 percentage *= category.Weight;
+                catPercentTotal += percentage;
                 total += category.Weight;
 
             }
 
+            percentage = catPercentTotal;
             double scale = 100 / total;
             percentage*= scale;
             string LetterGrade = null;
 
 
-            if (100 > percentage && percentage >= 93)
+            if (100 >= percentage && percentage >= 93)
                 LetterGrade = "A";
             else if (93 > percentage && percentage >= 90)
                 LetterGrade = "A-";

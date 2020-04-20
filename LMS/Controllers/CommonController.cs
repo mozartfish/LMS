@@ -154,7 +154,7 @@ namespace LMS.Controllers
         public IActionResult GetAssignmentContents(string subject, int num, string season, int year, string category, string asgname)
         {
             var query = from c in db.Courses
-                        where c.CourseName == subject && c.CourseNumber == num
+                        where c.DeptAbbreviation == subject && c.CourseNumber == num
                         join cl in db.Classes on c.CourseId equals cl.CourseId into classes
 
                         from j1 in classes
@@ -167,13 +167,13 @@ namespace LMS.Controllers
 
                         from j3 in Assign
                         where j3.AsgmtName == asgname
-                        select j3.Contents;
-            
+                        select j3;
+
             if (query.ToList().Count == 0)
             {
                 return Content("");
             }
-            return Content(query.First());
+            return Content(query.First().Contents);
         }
 
 
@@ -194,32 +194,63 @@ namespace LMS.Controllers
         public IActionResult GetSubmissionText(string subject, int num, string season, int year, string category, string asgname, string uid)
         {
             var query = from c in db.Courses
-                        where c.CourseName == subject && c.CourseNumber == num
-                        join cl in db.Classes on c.CourseId equals cl.CourseId into classes
+                        where c.DeptAbbreviation == subject && c.CourseNumber == num
+                        join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
 
-                        from j1 in classes
+                        from j1 in join1
                         where j1.Season == season && j1.Year == year
-                        join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into AssingCat
+                        join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into join2
 
-                        from j2 in AssingCat
+                        from j2 in join2
                         where j2.CategoryName == category
-                        join ass in db.Assignments on j2.CategoryId equals ass.CategoryId into Assign
+                        join assign in db.Assignments on j2.CategoryId equals assign.CategoryId into join3
 
-                        from j3 in Assign
+                        from j3 in join3
                         where j3.AsgmtName == asgname
-                        join sub in db.Submission on j3.AssignmentId equals sub.AssignmentId into submission
+                        join sub in db.Submission on j3.AssignmentId equals sub.AssignmentId into join4
 
-                        from j4 in submission
+                        from j4 in join4
                         where j4.UId == uid
-                        select j4.Content;
 
-            var assig = query.ToList();
+                        select new
+                        {
+                            content = j4.Content
+                        };
+
             if (query.ToList().Count == 0)
             {
                 return Content("");
             }
 
-            return Content(query.First());
+            return Content(query.First().content);
+
+            //var query = from c in db.Courses
+            //            where c.CourseName == subject && c.CourseNumber == num
+            //            join cl in db.Classes on c.CourseId equals cl.CourseId into classes
+
+            //            from j1 in classes
+            //            where j1.Season == season && j1.Year == year
+            //            join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into AssingCat
+
+            //            from j2 in AssingCat
+            //            where j2.CategoryName == category
+            //            join ass in db.Assignments on j2.CategoryId equals ass.CategoryId into Assign
+
+            //            from j3 in Assign
+            //            where j3.AsgmtName == asgname
+            //            join sub in db.Submission on j3.AssignmentId equals sub.AssignmentId into submission
+
+            //            from j4 in submission
+            //            where j4.UId == uid
+            //            select j4.Content;
+
+            //var assig = query.ToList();
+            //if (query.ToList().Count == 0)
+            //{
+            //    return Content("");
+            //}
+
+
         }
 
 
@@ -245,19 +276,19 @@ namespace LMS.Controllers
                             where s.UId == uid
                             select s;
 
-            if(studQuery.ToList().Count == 0)
+            if (studQuery.ToList().Count == 0)
             {
                 //not a student
                 var profQuery = from p in db.Professors
                                 where p.UId == uid
                                 select p;
 
-                if(profQuery.ToList().Count == 0)
+                if (profQuery.ToList().Count == 0)
                 {
                     //not a professor
                     var adminQuery = from a in db.Administrators
-                                    where a.UId == uid
-                                    select a;
+                                     where a.UId == uid
+                                     select a;
 
                     if (adminQuery.ToList().Count == 0)
                     {
@@ -311,7 +342,7 @@ namespace LMS.Controllers
                                 };
                 return Json(deptQuery.First());
             }
-            
+
         }
 
         /*******End code to modify********/

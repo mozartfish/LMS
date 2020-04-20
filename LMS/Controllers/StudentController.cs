@@ -321,6 +321,10 @@ namespace LMS.Controllers
                 {
                     gradePoints += 4 * 2.0;
                 }
+                else if (grade.Equals("C-"))
+                {
+                    gradePoints += 4 * 1.7;
+                }
                 else if (grade.Equals("D+")){
                     gradePoints += 4 * 1.3;
                 }
