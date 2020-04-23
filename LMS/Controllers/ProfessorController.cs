@@ -110,22 +110,25 @@ namespace LMS.Controllers
         {
             var query = from c in db.Courses
                         where c.DeptAbbreviation == subject && c.CourseNumber == num
-                        join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
+                        join klasse in db.Classes 
+                        on c.CourseId equals klasse.CourseId into join1
 
                         from j1 in join1
                         where j1.Season == season && j1.Year == year
-                        join e in db.EnrollmentGrade on j1.ClassId equals e.ClassId into join2
+                        join e in db.EnrollmentGrade 
+                        on j1.ClassId equals e.ClassId into join2
 
                         from j2 in join2
-                        join s in db.Students on j2.UId equals s.UId into stud
+                        join s in db.Students 
+                        on j2.UId equals s.UId into j3
 
-                        from st in stud
+                        from student in j3
                         select new
                         {
-                            fname = st.FirstName,
-                            lname = st.LastName,
-                            uid = st.UId,
-                            dob = st.Dob,
+                            fname = student.FirstName,
+                            lname = student.LastName,
+                            uid = student.UId,
+                            dob = student.Dob,
                             grade = j2.Grade
                         };
 
@@ -152,52 +155,60 @@ namespace LMS.Controllers
         /// <returns>The JSON array</returns>
         public IActionResult GetAssignmentsInCategory(string subject, int num, string season, int year, string category)
         {
+            // CASE 1: THE CATEGORY IS NULL OR AN EMPTY STRING
             if (string.IsNullOrEmpty(category))
             {
                 var nullquery = from c in db.Courses
                                 where c.DeptAbbreviation == subject && c.CourseNumber == num
-                                join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
+                                join klasse in db.Classes 
+                                on c.CourseId equals klasse.CourseId into join1
 
                                 from j1 in join1
                                 where j1.Season == season && j1.Year == year
-                                join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into join2
+                                join ac in db.AssignmentCategories 
+                                on j1.ClassId equals ac.ClassId into join2
 
                                 from j2 in join2
-                                join assign in db.Assignments on j2.CategoryId equals assign.CategoryId into foo
+                                join assign in db.Assignments 
+                                on j2.CategoryId equals assign.CategoryId into join3
 
-                                from thing in foo
+                                from j3 in join3
                                 select new
                                 {
-                                    aname = thing.AsgmtName,
+                                    aname = j3.AsgmtName,
                                     cname = j2.CategoryName,
-                                    due = thing.DueDate,
+                                    due = j3.DueDate,
                                     submissions = (from sub in db.Submission
-                                                   where sub.AssignmentId == thing.AssignmentId
+                                                   where sub.AssignmentId == j3.AssignmentId
                                                    select sub).Count()
                                 };
                 return Json(nullquery.ToArray());
             }
 
+            // CASE 2: THE CATEGORY IS SPECIFIED
             var query = from c in db.Courses
                         where c.DeptAbbreviation == subject && c.CourseNumber == num
-                        join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
+                        join klasse in db.Classes 
+                        on c.CourseId equals klasse.CourseId into join1
 
                         from j1 in join1
                         where j1.Season == season && j1.Year == year
-                        join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into join2
+                        join ac in db.AssignmentCategories 
+                        on j1.ClassId equals ac.ClassId into join2
 
                         from j2 in join2
                         where j2.CategoryName == category
-                        join assign in db.Assignments on j2.CategoryId equals assign.CategoryId into foo
+                        join assign in db.Assignments 
+                        on j2.CategoryId equals assign.CategoryId into join3
 
-                        from thing in foo
+                        from j3 in join3
                         select new
                         {
-                            aname = thing.AsgmtName,
+                            aname = j3.AsgmtName,
                             cname = j2.CategoryName,
-                            due = thing.DueDate,
+                            due = j3.DueDate,
                             submissions = (from sub in db.Submission
-                                           where sub.AssignmentId == thing.AssignmentId
+                                           where sub.AssignmentId == j3.AssignmentId
                                            select sub).Count()
                         };
             return Json(query.ToArray());
@@ -220,11 +231,13 @@ namespace LMS.Controllers
         {
             var query = from c in db.Courses
                         where c.DeptAbbreviation == subject && c.CourseNumber == num
-                        join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
+                        join klasse in db.Classes
+                        on c.CourseId equals klasse.CourseId into join1
 
                         from j1 in join1
                         where j1.Season == season && j1.Year == year
-                        join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into join2
+                        join ac in db.AssignmentCategories 
+                        on j1.ClassId equals ac.ClassId into join2
 
                         from j2 in join2
                         select new
@@ -260,15 +273,17 @@ namespace LMS.Controllers
                         where j2.CategoryName == category
                         select j2;
 
-
+            // CASE 1: CHECK IF AN ASSIGNMENT CATEGORY ALREADY EXISTS
             if (query.ToList().Count != 0)
             {
                 return Json(new { success = false });
             }
 
+            // Get the Class ID
             var classQuery = from c in db.Courses
                              where c.DeptAbbreviation == subject && c.CourseNumber == num
-                             join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
+                             join klasse in db.Classes 
+                             on c.CourseId equals klasse.CourseId into join1
 
                              from j1 in join1
                              where j1.Season == season && j1.Year == year
@@ -277,6 +292,7 @@ namespace LMS.Controllers
                                  classID = j1.ClassId,
                              };
 
+            // Create a new assignment category
             AssignmentCategories cat = new AssignmentCategories()
             {
                 CategoryName = category,
@@ -292,7 +308,6 @@ namespace LMS.Controllers
             }
             catch (Exception e)
             {
-
                 return Json(new { success = false });
             }
             return Json(new { success = true });
@@ -316,25 +331,30 @@ namespace LMS.Controllers
         {
             var query = from c in db.Courses
                         where c.DeptAbbreviation == subject && c.CourseNumber == num
-                        join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
+                        join klasse in db.Classes 
+                        on c.CourseId equals klasse.CourseId into join1
 
                         from j1 in join1
                         where j1.Season == season && j1.Year == year
-                        join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into join2
+                        join ac in db.AssignmentCategories 
+                        on j1.ClassId equals ac.ClassId into join2
 
                         from j2 in join2
                         where j2.CategoryName == category
-                        join assign in db.Assignments on j2.CategoryId equals assign.CategoryId into join3
+                        join assign in db.Assignments 
+                        on j2.CategoryId equals assign.CategoryId into join3
 
                         from j3 in join3
                         where j3.AsgmtName == asgname
                         select j3;
 
+            // CASE 1: CHECK IF AN ASSIGNMENT ALREADY EXISTS IN THE ASSIGNMENT CATEGORY
             if (query.ToList().Count != 0)
             {
                 return Json(new { success = false });
             }
 
+            // Get the category ID
             var AssignmentQuery = from c in db.Courses
                                   where c.DeptAbbreviation == subject && c.CourseNumber == num
                                   join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
@@ -350,6 +370,7 @@ namespace LMS.Controllers
                                       CategoryID = j2.CategoryId,
                                   };
 
+            // Create a new assignment
             Assignments Asgmt = new Assignments()
             {
                 AsgmtName = asgname,
@@ -370,16 +391,20 @@ namespace LMS.Controllers
                 return Json(new { success = false });
             }
 
+            // Get the sudent ID and the class ID
             var studQuery = from c in db.Courses
                             where c.DeptAbbreviation == subject && c.CourseNumber == num
-                            join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
+                            join klasse in db.Classes 
+                            on c.CourseId equals klasse.CourseId into join1
 
                             from j1 in join1
                             where j1.Season == season && j1.Year == year
-                            join en in db.EnrollmentGrade on j1.ClassId equals en.ClassId into join2
+                            join en in db.EnrollmentGrade 
+                            on j1.ClassId equals en.ClassId into join2
 
                             from j2 in join2
-                            join stud in db.Students on j2.UId equals stud.UId into join3
+                            join stud in db.Students 
+                            on j2.UId equals stud.UId into join3
 
                             from j3 in join3
                             select new
@@ -388,6 +413,8 @@ namespace LMS.Controllers
                                 classID = j2.ClassId
                             };
 
+
+            // Update the GPA of students in the class
             foreach (var student in studQuery.ToList())
             {
                 if (!autoGrade(student.uid, student.classID))
@@ -421,22 +448,27 @@ namespace LMS.Controllers
         {
             var query = from c in db.Courses
                         where c.DeptAbbreviation == subject && c.CourseNumber == num
-                        join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
+                        join klasse in db.Classes 
+                        on c.CourseId equals klasse.CourseId into join1
 
                         from j1 in join1
                         where j1.Season == season && j1.Year == year
-                        join ascat in db.AssignmentCategories on j1.ClassId equals ascat.ClassId into join2
+                        join ascat in db.AssignmentCategories 
+                        on j1.ClassId equals ascat.ClassId into join2
 
                         from j2 in join2
                         where j2.CategoryName == category
-                        join asgn in db.Assignments on j2.CategoryId equals asgn.CategoryId into join3
+                        join asgn in db.Assignments 
+                        on j2.CategoryId equals asgn.CategoryId into join3
 
                         from j3 in join3
                         where j3.AsgmtName == asgname
-                        join sub in db.Submission on j3.AssignmentId equals sub.AssignmentId into join4
+                        join sub in db.Submission 
+                        on j3.AssignmentId equals sub.AssignmentId into join4
 
                         from j4 in join4
-                        join stud in db.Students on j4.UId equals stud.UId into join5
+                        join stud in db.Students 
+                        on j4.UId equals stud.UId into join5
 
                         from j5 in join5
                         select new
@@ -467,19 +499,23 @@ namespace LMS.Controllers
         {
             var query = from c in db.Courses
                         where c.DeptAbbreviation == subject && c.CourseNumber == num
-                        join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
+                        join klasse in db.Classes 
+                        on c.CourseId equals klasse.CourseId into join1
 
                         from j1 in join1
                         where j1.Season == season && j1.Year == year
-                        join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into join2
+                        join ac in db.AssignmentCategories 
+                        on j1.ClassId equals ac.ClassId into join2
 
                         from j2 in join2
                         where j2.CategoryName == category
-                        join assign in db.Assignments on j2.CategoryId equals assign.CategoryId into join3
+                        join assign in db.Assignments 
+                        on j2.CategoryId equals assign.CategoryId into join3
 
                         from j3 in join3
                         where j3.AsgmtName == asgname
-                        join sub in db.Submission on j3.AssignmentId equals sub.AssignmentId into join4
+                        join sub in db.Submission 
+                        on j3.AssignmentId equals sub.AssignmentId into join4
 
                         from j4 in join4
                         where j4.UId == uid
@@ -487,8 +523,6 @@ namespace LMS.Controllers
 
             var submission = query.First();
             submission.Score = (uint)score;
-
-
 
             try
             {
@@ -499,16 +533,18 @@ namespace LMS.Controllers
                 return Json(new { success = false });
             }
 
+            // Get the Class ID
             var classQuery = from c in db.Courses
                              where c.DeptAbbreviation == subject && c.CourseNumber == num
-                             join klasse in db.Classes on c.CourseId equals klasse.CourseId into join1
+                             join klasse in db.Classes 
+                             on c.CourseId equals klasse.CourseId into join1
 
                              from j1 in join1
                              where j1.Season == season && j1.Year == year
                              select j1;
+
+            // Update the Student Grades
             autoGrade(submission.UId, classQuery.First().ClassId);
-
-
             return Json(new { success = true });
         }
 
@@ -528,7 +564,8 @@ namespace LMS.Controllers
         {
             var query = from c in db.Classes
                         where c.Taught == uid
-                        join course in db.Courses on c.CourseId equals course.CourseId into join1
+                        join course in db.Courses 
+                        on c.CourseId equals course.CourseId into join1
 
                         from j1 in join1
                         select new
@@ -542,6 +579,12 @@ namespace LMS.Controllers
             return Json(query.ToArray());
         }
 
+        /// <summary>
+        ///  Function that computes an assignment grade for a student
+        /// </summary>
+        /// <param name="uid">The unique ID number of a student</param>
+        /// <param name="classID">The unique class ID number</param>
+        /// <returns></returns>
         bool autoGrade(string uid, uint classID)
         {
             var catQuery = from ac in db.AssignmentCategories
