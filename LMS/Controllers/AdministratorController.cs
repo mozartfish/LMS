@@ -48,7 +48,6 @@ namespace LMS.Controllers
                             number = c.CourseNumber,
                             name = c.CourseName
                         };
-
             return Json(query.ToArray());
         }
 
@@ -71,7 +70,6 @@ namespace LMS.Controllers
                             fname = p.FirstName,
                             uid = p.UId
                         };
-
             return Json(query.ToArray());
         }
 
@@ -86,11 +84,12 @@ namespace LMS.Controllers
         /// false if the Course already exists.</returns>
         public IActionResult CreateCourse(string subject, int number, string name)
         {
-
+            // get the course and its course number
             var query = from c in db.Courses
                         where c.DeptAbbreviation == subject && c.CourseNumber == number
                         select c;
 
+            // CHECK 1: THE COURSE ALREADY EXISTS
             if (query.ToList().Count != 0)
             {
                 return Json(new { success = false });
@@ -107,7 +106,7 @@ namespace LMS.Controllers
                 db.Courses.Add(course);
                 db.SaveChanges();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Json(new { success = false });
             }
@@ -131,31 +130,48 @@ namespace LMS.Controllers
         /// a Class offering of the same Course in the same Semester.</returns>
         public IActionResult CreateClass(string subject, int number, string season, int year, DateTime start, DateTime end, string location, string instructor)
         {
-                var query = from c in db.Courses
+            var query = from c in db.Courses
                         where c.DeptAbbreviation == subject && c.CourseNumber == number
-                        join cl in db.Classes on c.CourseId equals cl.CourseId into join1
+                        join c1 in db.Classes
+                        on c.CourseId equals c1.CourseId into join1
                         from j1 in join1
                         where j1.Season == season && j1.Year == year
                         select j1;
 
-
+            // CHECK 1: CHECK IF THE CLASS ALREADY EXISTS
             if (query.ToList().Count != 0)
-            {
                 return Json(new { success = false });
+
+            // CHECK 2: CHECK IF ANOTHER CLASS OCCUPIES THE SAME LOCATION WITHIN THE START END RANGE
+            var query2 = from classe in db.Classes
+                         where classe.Location == location && classe.Season == season
+                         select classe;
+
+            foreach (Classes c in query2)
+            {
+                // CHECK 2: CHECK IF A CLASS STARTS DURING ANOTHER CLASS IN THE SAME LOCATION
+                if (c.StartTime < start && start < end)
+                    return Json(new { success = false });
+
+                // CHECK 3: CHECK IF A CLASS ENDS DURING ANOTHER CLASS IN THE SAME LOCATIN
+                if (c.StartTime < end && end < c.EndTime)
+                    return Json(new { success = false });
             }
 
-            var query2 = from c in db.Courses
-                        where c.DeptAbbreviation == subject && c.CourseNumber == number
-                        select c.CourseId;
+            // Get the course ID for the class
+            var query3 = from c in db.Courses
+                         where c.DeptAbbreviation == subject && c.CourseNumber == number
+                         select c.CourseId;
 
+            // Create and add new classes to the database
             Classes klasse = new Classes()
             {
-                CourseId = (uint)query2.First(),
-                Season = season,
+                CourseId = (uint)query3.First(),
                 Year = (uint)year,
+                Season = season,
+                Location = location,
                 StartTime = start,
                 EndTime = end,
-                Location = location,
                 Taught = instructor
             };
 
@@ -164,15 +180,20 @@ namespace LMS.Controllers
                 db.Classes.Add(klasse);
                 db.SaveChanges();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Json(new { success = false });
             }
             return Json(new { success = true });
+
+
+
+
+
+
+
+            /*******End code to modify********/
+
         }
-
-
-        /*******End code to modify********/
-
     }
 }
