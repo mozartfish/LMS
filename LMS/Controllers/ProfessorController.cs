@@ -260,7 +260,6 @@ namespace LMS.Controllers
                         where j2.CategoryName == category
                         select j2;
 
-
             if (query.ToList().Count != 0)
             {
                 return Json(new { success = false });

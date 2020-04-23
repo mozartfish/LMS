@@ -224,33 +224,6 @@ namespace LMS.Controllers
 
             return Content(query.First().content);
 
-            //var query = from c in db.Courses
-            //            where c.CourseName == subject && c.CourseNumber == num
-            //            join cl in db.Classes on c.CourseId equals cl.CourseId into classes
-
-            //            from j1 in classes
-            //            where j1.Season == season && j1.Year == year
-            //            join ac in db.AssignmentCategories on j1.ClassId equals ac.ClassId into AssingCat
-
-            //            from j2 in AssingCat
-            //            where j2.CategoryName == category
-            //            join ass in db.Assignments on j2.CategoryId equals ass.CategoryId into Assign
-
-            //            from j3 in Assign
-            //            where j3.AsgmtName == asgname
-            //            join sub in db.Submission on j3.AssignmentId equals sub.AssignmentId into submission
-
-            //            from j4 in submission
-            //            where j4.UId == uid
-            //            select j4.Content;
-
-            //var assig = query.ToList();
-            //if (query.ToList().Count == 0)
-            //{
-            //    return Content("");
-            //}
-
-
         }
 
 
