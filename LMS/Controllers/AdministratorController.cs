@@ -186,12 +186,6 @@ namespace LMS.Controllers
             }
             return Json(new { success = true });
 
-
-
-
-
-
-
             /*******End code to modify********/
 
         }

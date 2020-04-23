@@ -43,7 +43,6 @@ namespace LMS.Controllers
             return View();
         }
 
-
         public IActionResult ClassListings(string subject, string num)
         {
             System.Diagnostics.Debug.WriteLine(subject + num);
@@ -51,7 +50,6 @@ namespace LMS.Controllers
             ViewData["num"] = num;
             return View();
         }
-
 
         /*******Begin code to modify********/
 
@@ -71,13 +69,16 @@ namespace LMS.Controllers
         {
             var query = from s in db.Students
                         where s.UId == uid
-                        join en in db.EnrollmentGrade on s.UId equals en.UId into join1
+                        join en in db.EnrollmentGrade 
+                        on s.UId equals en.UId into join1
 
                         from j1 in join1
-                        join klasse in db.Classes on j1.ClassId equals klasse.ClassId into join2
+                        join klasse in db.Classes 
+                        on j1.ClassId equals klasse.ClassId into join2
 
                         from j2 in join2
-                        join c in db.Courses on j2.CourseId equals c.CourseId into join3
+                        join c in db.Courses 
+                        on j2.CourseId equals c.CourseId into join3
 
                         from j3 in join3
                         select new
@@ -89,7 +90,6 @@ namespace LMS.Controllers
                             year = j2.Year,
                             grade = j1.Grade ?? "--"
                         };
-
             return Json(query.ToArray());
         }
 
@@ -219,8 +219,6 @@ namespace LMS.Controllers
                     return Json(new { success = false });
                 }
             }
-
-
             return Json(new { success = true });
         }
 
@@ -339,6 +337,9 @@ namespace LMS.Controllers
                 }
                 numCredits += 4;
             }
+            if (numCredits == 0.0)
+                return Json(new { gpa = 0.0 });
+            
             return Json(new {gpa = gradePoints/numCredits });
         }
 
