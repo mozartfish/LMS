@@ -344,6 +344,8 @@ namespace LMS.Controllers
                 }
                 numCredits += 4;
             }
+
+            // CHECK TO AVOID THE DIVISION BY ZERO ERROR WHEN COMPUTING GPA
             if (numCredits == 0.0)
                 return Json(new { gpa = 0.0 });
             
