@@ -159,3 +159,4 @@ C:\Users\rajan\Desktop\cs_work\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.dll
 C:\Users\rajan\Desktop\cs_work\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.pdb
 C:\Users\rajan\Desktop\cs_work\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.genruntimeconfig.cache
 C:\Users\rajan\Desktop\cs_work\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.csproj.CopyComplete
+C:\Users\Andrew\Documents\Skool\5530 - Database Systems\Homework 6\LibraryWebServerHandout\LMS\LMS\obj\Debug\netcoreapp2.2\LMS.csprojAssemblyReference.cache

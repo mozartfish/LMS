@@ -150,7 +150,7 @@ namespace LMS.Controllers
             foreach (Classes c in query2)
             {
                 // CHECK 2: CHECK IF A CLASS STARTS DURING ANOTHER CLASS IN THE SAME LOCATION
-                if (c.StartTime < start && start < end)
+                if (c.StartTime < start && start < c.EndTime)
                     return Json(new { success = false });
 
                 // CHECK 3: CHECK IF A CLASS ENDS DURING ANOTHER CLASS IN THE SAME LOCATIN
